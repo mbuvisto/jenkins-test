@@ -1,22 +1,18 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
-            steps {
-                sh './gradlew build'
+        stage('Example') {
+            input {
+                message "Should we continue?"
+                ok "Yes, we should."
+                submitter "alice,bob"
+                parameters {
+                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+                }
             }
-        }
-        stage('Test') {
             steps {
-                sh './gradlew check'
+                echo "Hello, ${PERSON}, nice to meet you."
             }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-            junit 'build/reports/**/*.xml'
         }
     }
 }
